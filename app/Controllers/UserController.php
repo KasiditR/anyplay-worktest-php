@@ -58,7 +58,7 @@ class UserController
 
     public function createUser()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = getRequestData();
         if ($this->user->usernameExists($data['username'])) {
             echo json_encode(['message' => 'Username already exists']);
         } else {
@@ -79,50 +79,52 @@ class UserController
 
     public function updateUser($id)
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = getRequestData();
         $this->user->update($id, $data['username'], $data['password']);
         echo json_encode(['message' => 'User updated successfully']);
     }
 
     public function deleteUserById($id)
     {
-        $this->user->delete($id);
-        echo json_encode(['message' => 'User deleted successfully']);
+        $user = $this->user->getById($id);
+        if (!$user) {
+            sendErrorResponse('User not found.', 404);
+        }
+
+        $result = $this->user->delete($id);
+        if ($result) {
+            sendSuccessResponse('User deleted successfully.');
+        } else {
+            sendErrorResponse('User not found.', 500);
+        }
     }
 
     public function addDiamondById($count)
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = getRequestData();
         if (!isset($data['id'])) {
-            echo json_encode(
-                [
-                    'message' => 'userId undefined',
-                ]
-            );
+            sendErrorResponse('userId undefined.', 401);
             return;
         }
 
         $userData = $this->userData->getById($data['id']);
         if (!isset($userData)) {
-            echo json_encode(
-                [
-                    'message' => 'User not found',
-                ]
-            );
+            sendErrorResponse('User not found.', 404);
             return;
         }
 
         if (isset($userData["diamonds"])) {
             $userData["diamonds"] += $count;
             $this->userData->updateDiamond($data['id'], $userData["diamonds"]);
+            sendSuccessResponse(
+                'add diamond successfully.',
+                [
+                    'diamonds' => $userData["diamonds"]
+                ]
+            );
+        } else {
+            sendErrorResponse('add diamond failure.', 401);
         }
-
-        echo json_encode(
-            [
-                'message' => 'User updated diamond successfully',
-                'diamonds' => $userData["diamonds"]
-            ]
-        );
     }
 }
 ?>

@@ -20,75 +20,62 @@ class AuthenticationController
 
     public function login()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = getRequestData();
 
         if (!isset($data['username']) || !isset($data['password'])) {
-            http_response_code(400);
-            echo json_encode(['message' => 'Username and password are required.']);
+            sendErrorResponse('Username and password are required.', 400);
             return;
         }
 
-        $username = $data['username'];
-        $password = $data['password'];
-
-        $user = $this->user->findByUsername($username);
+        $user = $this->user->findByUsername($data['username']);
 
         if ($user) {
-            if ($password == $user['password']) {
+            if (verifyPassword($data['password'], $user['password'])) {
                 $userData = $this->userData->getById($user['id']);
                 $this->loginHistory->create($user['id'], date('Y-m-d H:i:s'));
-                echo json_encode([
-                    'message' => 'Login successful',
-                    'user' => [
-                        'id' => $user['id'],
-                        'username' => $user['username'],
-                        'diamonds' => $userData['diamonds'],
-                        'hearts' => $userData['hearts']
-                    ]
+                sendSuccessResponse('Login successful', [
+                    'id' => $user['id'],
+                    'username' => $user['username'],
+                    'diamonds' => $userData['diamonds'],
+                    'hearts' => $userData['hearts']
                 ]);
             } else {
-                http_response_code(401);
-                echo json_encode(['message' => 'Invalid username or password.']);
+                sendErrorResponse('Invalid username or password.', 401);
             }
         } else {
-            http_response_code(401);
-            echo json_encode(['message' => 'Invalid username or password.']);
+            sendErrorResponse('Invalid username or password.', 401);
         }
     }
 
     public function signUp()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = getRequestData();
 
         if (!isset($data['username']) || !isset($data['password']) || !isset($data['confirmPassword'])) {
-            http_response_code(400);
-            echo json_encode(['message' => 'Username and password are required.']);
+            sendErrorResponse('Username and password are required.', 400);
             return;
         }
-        
+
         if ($data['password'] != $data['confirmPassword']) {
-            http_response_code(401);
-            echo json_encode(['message' => 'Passwords do not match. Please try again.']);
+            sendErrorResponse('Passwords do not match. Please try again.', 401);
             return;
         }
-        
+
         if ($this->user->usernameExists($data['username'])) {
-            http_response_code(401);
-            echo json_encode(['message' => 'Username already exists.']);
+            sendErrorResponse('Username already exists.', 401);
             return;
         }
 
         $userId = md5(microtime(true) . rand());
-        $isCreate = $this->user->create($userId, $data['username'], $data['password']);
+        $hashedPassword = hashPassword($data['password']);
+        $isCreate = $this->user->create($userId, $data['username'], $hashedPassword);
         if ($isCreate) {
             $this->userData->create($userId);
+            sendSuccessResponse('Sign Up successfully.');
+        } else {
+            sendErrorResponse('Failed to create user.', 500);
         }
 
-        echo json_encode(
-            [
-                'message' => 'Sign Up successfully.',
-            ]
-        );
     }
 }
 ?>
