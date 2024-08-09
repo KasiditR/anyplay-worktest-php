@@ -1,33 +1,32 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../app/Services/Database.php';
-require __DIR__ . '/../app/Models/User.php';
-require __DIR__ . '/../app/Models/UserData.php';
-require __DIR__ . '/../app/Models/LoginHistory.php';
-require __DIR__ . '/../app/Controllers/UserController.php';
-require __DIR__ . '/../app/Controllers/AuthenticationController.php';
+require __DIR__ . '/../app/Services/database.php';
+require __DIR__ . '/../app/Models/user.php';
+require __DIR__ . '/../app/Models/user_data.php';
+require __DIR__ . '/../app/Models/login_history.php';
+require __DIR__ . '/../app/Controllers/user_controller.php';
+require __DIR__ . '/../app/Controllers/authentication_controller.php';
 require __DIR__ . '/../app/Helpers/function.php';
 
 use App\Controllers\AuthenticationController;
 use App\Controllers\UserController;
 use Bramus\Router\Router;
 
-// Create Router instance
 $router = new Router();
-$userController = new UserController();
-$authenticationController = new AuthenticationController();
+$user_controller = new UserController();
+$authentication_controller = new AuthenticationController();
 
-$router->post('/login', function () use ($authenticationController) {
-    $authenticationController->login();
+$router->post('/login', function () use ($authentication_controller) {
+    $authentication_controller->login();
 });
 
-$router->post('/signup', function () use ($authenticationController) {
-    $authenticationController->signUp();
+$router->post('/signup', function () use ($authentication_controller) {
+    $authentication_controller->signup();
 });
 
-$router->put('/updateDiamond', function () use ($userController) {
-    $userController->addDiamondById(100);
+$router->put('/updateDiamond', function () use ($user_controller) {
+    $user_controller->add_diamond_by_id(100);
 });
 
 // test

@@ -5,55 +5,55 @@ use App\Services\Database;
 
 class User
 {
-    private $db;
+    private $_db;
 
     public function __construct()
     {
-        $this->db = Database::connect();
+        $this->_db = Database::connect();
     }
 
-    public function getAll()
+    public function get_all()
     {
-        $result = $this->db->query("SELECT * FROM users");
+        $result = $this->_db->query("SELECT * FROM users");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function getById($id)
+    public function get_by_id($id)
     {
-        $query = $this->db->query("SELECT id, username FROM users WHERE id = '{$id}'");
+        $query = $this->_db->query("SELECT id, username FROM users WHERE id = '{$id}'");
         return $query->fetch_assoc();
     }
 
     public function create($userId, $name, $password)
     {
-        $query = $this->db->query("INSERT INTO users (id,username, password) VALUES ('{$userId}','{$name}', '{$password}')");
+        $query = $this->_db->query("INSERT INTO users (id,username, password) VALUES ('{$userId}','{$name}', '{$password}')");
         return $query;
     }
 
     public function update($id, $username, $password)
     {
-        $query = $this->db->query("UPDATE users SET username = '{$username}', password = '{$password}' WHERE id = '{$id}'");
+        $query = $this->_db->query("UPDATE users SET username = '{$username}', password = '{$password}' WHERE id = '{$id}'");
         return $query;
     }
 
     public function delete($id)
     {
-        $query = $this->db->query("DELETE FROM users WHERE id = '{$id}'");
+        $query = $this->_db->query("DELETE FROM users WHERE id = '{$id}'");
         return $query;
     }
 
-    public function usernameExists($username)
+    public function username_exists($username)
     {
-        $stmt = $this->db->query("SELECT id FROM users WHERE username = '{$username}'");
-        $exists = $stmt->num_rows > 0;
-        $stmt->close();
+        $query = $this->_db->query("SELECT id FROM users WHERE username = '{$username}'");
+        $exists = $query->num_rows > 0;
+        $query->close();
         return $exists;
     }
 
-    public function findByUsername($username)
+    public function find_by_username($username)
     {
-        $result = $this->db->query("SELECT * FROM users WHERE username = '{$username}'");
-        return $result->fetch_assoc();
+        $query = $this->_db->query("SELECT * FROM users WHERE username = '{$username}'");
+        return $query->fetch_assoc();
     }
 }
 ?>
