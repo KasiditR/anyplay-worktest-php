@@ -29,15 +29,15 @@ $router->put('/updateDiamond', function () use ($user_controller) {
     $user_controller->add_diamond_by_id(100);
 });
 
-// test
+// handle
 
-// $router->get('/users', function () use ($userController) {
-//     $userController->getAllUsers();
-// });
+$router->get('/users', function () use ($user_controller) {
+    $user_controller->get_all_users();
+});
 
-// $router->get('/user/(\w+)', function ($id) use ($userController) {
-//     $userController->getUserById($id);
-// });
+$router->get('/user/(\w+)', function ($id) use ($user_controller) {
+    $user_controller->get_user_by_id($id);
+});
 
 // $router->post('/user', function () use ($userController) {
 //     $userController->createUser();

@@ -30,7 +30,7 @@ class UserController
             });
 
             $user_data = reset($user_data);
-
+            unset($user['password']);
             $combined_datas[] = array_merge(
                 $user,
                 [
@@ -40,7 +40,11 @@ class UserController
             );
         }
 
-        send_success_response('Get users successfully.', $combined_datas);
+        $response = [
+            'data' => array_values($combined_datas)
+        ];
+
+        send_success_response('Get users successfully.', $response);
     }
 
     public function get_user_by_id($userId)
