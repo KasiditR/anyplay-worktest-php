@@ -29,28 +29,5 @@ $router->put('/updateDiamond', function () use ($user_controller) {
     $user_controller->add_diamond_by_id(100);
 });
 
-// handle
-
-$router->get('/users', function () use ($user_controller) {
-    $user_controller->get_all_users();
-});
-
-$router->get('/user/(\w+)', function ($id) use ($user_controller) {
-    $user_controller->get_user_by_id($id);
-});
-
-// $router->post('/user', function () use ($userController) {
-//     $userController->createUser();
-// });
-
-// $router->put('/user/(\w+)', function ($id) use ($userController) {
-//     $userController->updateUser($id);
-// });
-
-// $router->delete('/user/(\w+)', function ($id) use ($userController) {
-//     $userController->deleteUserById($id);
-// });
-
-// Run it!
 $router->run();
 ?>

@@ -30,22 +30,11 @@ class UserData
         return $query;
     }
 
-    public function update($userId, $diamonds, $hearts)
-    {
-        $query = $this->_db->query("UPDATE user_data SET diamonds = '{$diamonds}', hearts = '{$hearts}' WHERE user_id = '{$userId}'");
-        return $query;
-    }
-
     public function update_diamond($userId, $diamonds)
     {
         $query = $this->_db->query("UPDATE user_data SET diamonds = '{$diamonds}' WHERE user_id = '{$userId}'");
         return $query;
     }
 
-    public function delete($userId)
-    {
-        $query = $this->_db->query("DELETE FROM user_data WHERE user_id = '{$userId}'");
-        return $query;
-    }
 }
 ?>

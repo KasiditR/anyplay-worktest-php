@@ -30,12 +30,6 @@ class User
         return $query;
     }
 
-    public function update($id, $username, $password)
-    {
-        $query = $this->_db->query("UPDATE users SET username = '{$username}', password = '{$password}' WHERE id = '{$id}'");
-        return $query;
-    }
-
     public function delete($id)
     {
         $query = $this->_db->query("DELETE FROM users WHERE id = '{$id}'");
